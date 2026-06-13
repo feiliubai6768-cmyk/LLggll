@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LVGL GUI Glassmorphism Redesign</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Using Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for the data curve -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- The app container fixed to 1024x600 -->
+    <div class="app-container">
+        <!-- Abstract background elements for glassmorphism -->
+        <div class="bg-shape shape1"></div>
+        <div class="bg-shape shape2"></div>
+        <div class="bg-shape shape3"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="nav-menu">
+                <button class="nav-item active" data-target="monitoring">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    实时监控
+                </button>
+                <button class="nav-item" data-target="settings">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    参数设置
+                </button>
+                <button class="nav-item" data-target="history">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    历史记录
+                </button>
+                <button class="nav-item" data-target="transfer">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    数据传输
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="dose-rate">
+                    <div class="label">剂量率</div>
+                    <div class="value">0.08 <span class="unit">μSv/h</span></div>
+                </div>
+                <div class="datetime">
+                    <div class="time" id="current-time">11:26:14</div>
+                    <div class="date" id="current-date">2024/06/20</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            
+            <!-- Screen 1: Monitoring -->
+            <section id="monitoring" class="screen active">
+                <header class="glass-header">
+                    <h2>实时监控</h2>
+                    <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg></button>
+                </header>
+                <div class="glass-card chart-container">
+                    <h3 class="chart-title">数据曲线</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="doseChart"></canvas>
+                    </div>
+                </div>
+                <div class="status-bar glass-card">
+                    <div class="status-indicator"></div>
+                    <span>运行正常</span>
+                </div>
+            </section>
+
+            <!-- Screen 2: Settings -->
+            <section id="settings" class="screen">
+                <header class="glass-header">
+                    <h2>参数设置</h2>
+                </header>
+                <div class="scroll-container">
+                    <div class="glass-card setting-group">
+                        <h3><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg> 测量设置</h3>
+                        <div class="setting-row">
+                            <span class="setting-label">剂量率阈值</span>
+                            <div class="custom-select">
+                                <select>
+                                    <option>0.5 μSv/h</option>
+                                    <option>1.0 μSv/h</option>
+                                    <option>2.0 μSv/h</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-label">声光报警</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="glass-card setting-group">
+                        <h3><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> 系统设置</h3>
+                        <div class="setting-row">
+                            <span class="setting-label">设置时间</span>
+                            <div class="input-group">
+                                <input type="text" class="glass-input" value="2024/04/22">
+                                <input type="text" class="glass-input" value="11:20:50">
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-label">息屏时间</span>
+                            <div class="custom-select">
+                                <select>
+                                    <option>1分钟</option>
+                                    <option>5分钟</option>
+                                    <option>10分钟</option>
+                                    <option>永不</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-label">背光亮度</span>
+                            <div class="slider-group">
+                                <input type="range" min="1" max="100" value="90" class="range-slider">
+                                <span class="slider-val">90%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 3: History -->
+            <section id="history" class="screen">
+                <div class="glass-card full-height">
+                    <div class="history-header">
+                        <h2>告警历史记录</h2>
+                        <div class="total-badge"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> 共计: 12</div>
+                    </div>
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>时间</th>
+                                <th>信息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>2024/06/20 10:15</td><td>剂量率超标报警</td></tr>
+                            <tr><td>2</td><td>2024/06/19 14:32</td><td>设备电量低</td></tr>
+                            <tr><td>3</td><td>2024/06/18 09:05</td><td>传感器连接中断</td></tr>
+                            <tr><td>4</td><td>2024/06/15 16:40</td><td>剂量率超标报警</td></tr>
+                            <tr><td>5</td><td>2024/06/12 11:20</td><td>剂量率超标报警</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="table-pagination">
+                        <button class="glass-btn icon-text"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> 全部清除</button>
+                        <div class="page-controls">
+                            <button class="glass-btn">← 上一页</button>
+                            <button class="glass-btn">下一页 →</button>
+                        </div>
+                        <button class="glass-btn icon-text">返回 <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Screen 4: Transfer -->
+            <section id="transfer" class="screen">
+                <div class="glass-card centered-card">
+                    <header class="card-header">
+                        <h2><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg> 传输速度</h2>
+                        <button class="close-btn">×</button>
+                    </header>
+                    <div class="card-body">
+                        <div class="transfer-box">
+                            <div class="box-header"><span>TF卡 (数据源)</span> <span class="cyan-text">0GB/0GB</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar" style="width: 2%;"></div></div>
+                        </div>
+                        <div class="transfer-box">
+                            <div class="box-header"><span>U盘 (目标源)</span> <span class="cyan-text">0GB 空闲</span></div>
+                            <div class="progress-bar-container"><div class="progress-bar" style="width: 5%;"></div></div>
+                        </div>
+                        
+                        <div class="transfer-box date-box">
+                            <div class="box-header"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> 日期选择</div>
+                            <div class="date-inputs">
+                                <div class="date-field">
+                                    <label>开始日期</label>
+                                    <input type="text" class="glass-input full-width" value="2024/04/22">
+                                </div>
+                                <div class="date-field">
+                                    <label>结束日期</label>
+                                    <input type="text" class="glass-input full-width" value="2024/04/22">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-row align-right">
+                            <button class="glass-btn primary-btn" id="start-copy-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg> 开始拷贝</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Modal: Copying -->
+        <div class="modal-overlay" id="copy-modal">
+            <div class="glass-card modal-content">
+                <header class="card-header">
+                    <h2><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg> 数据拷贝中</h2>
+                </header>
+                <div class="card-body">
+                    <div class="progress-info">
+                        <div class="percentage cyan-text" id="copy-percentage">0%</div>
+                        <div class="remaining-time">
+                            <span>剩余时间</span>
+                            <span class="time-val">00:00</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container lg"><div class="progress-bar animated" id="copy-progress" style="width: 0%;"></div></div>
+                    
+                    <div class="stats-box">
+                        <div class="stat-col">
+                            <div class="stat-label"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 传输速度</div>
+                            <div class="stat-val">0 MB/s</div>
+                        </div>
+                        <div class="stat-col align-right">
+                            <div class="stat-label"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg> 已拷贝/总计</div>
+                            <div class="stat-val">100MB / 200MB</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-row align-right">
+                        <button class="glass-btn" id="cancel-copy-btn"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 取消拷贝</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
