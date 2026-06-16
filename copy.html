@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据拷贝中 - LVGL GUI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <div class="bg-shape shape1"></div>
+        <div class="bg-shape shape2"></div>
+        <div class="bg-shape shape3"></div>
+
+        <!-- 全屏居中拷贝弹窗内容 -->
+        <div class="modal-overlay show">
+            <div class="glass-card modal-content">
+                <header class="card-header">
+                    <h2><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg> 数据拷贝中</h2>
+                </header>
+                <div class="card-body">
+                    <div class="progress-info">
+                        <div class="percentage cyan-text" id="copy-percentage">0%</div>
+                        <div class="remaining-time">
+                            <span>剩余时间</span>
+                            <span class="time-val" id="remaining-time">--:--</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container lg"><div class="progress-bar animated" id="copy-progress" style="width: 0%;"></div></div>
+
+                    <div class="stats-box">
+                        <div class="stat-col">
+                            <div class="stat-label"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 传输速度</div>
+                            <div class="stat-val" id="transfer-speed">0 MB/s</div>
+                        </div>
+                        <div class="stat-col align-right">
+                            <div class="stat-label"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg> 已拷贝/总计</div>
+                            <div class="stat-val" id="copy-size">0MB / 200MB</div>
+                        </div>
+                    </div>
+
+                    <div class="action-row align-right">
+                        <button class="glass-btn" onclick="location.href='transfer.html'"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 取消拷贝</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var progressEl = document.getElementById('copy-progress');
+            var percentageEl = document.getElementById('copy-percentage');
+            var speedEl = document.getElementById('transfer-speed');
+            var sizeEl = document.getElementById('copy-size');
+            var timeEl = document.getElementById('remaining-time');
+            var totalSize = 200;
+            var progress = 0;
+            var startTime = Date.now();
+
+            function updateProgress() {
+                progress += Math.random() * 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    percentageEl.textContent = '100%';
+                    progressEl.style.width = '100%';
+                    speedEl.textContent = '0 MB/s';
+                    sizeEl.textContent = totalSize + 'MB / ' + totalSize + 'MB';
+                    timeEl.textContent = '00:00';
+                    return;
+                }
+                var pct = Math.floor(progress);
+                percentageEl.textContent = pct + '%';
+                progressEl.style.width = progress + '%';
+
+                var elapsed = (Date.now() - startTime) / 1000;
+                var copied = totalSize * (progress / 100);
+                var speed = elapsed > 0 ? copied / elapsed : 0;
+                speedEl.textContent = speed.toFixed(1) + ' MB/s';
+                sizeEl.textContent = Math.floor(copied) + 'MB / ' + totalSize + 'MB';
+
+                var remaining = speed > 0 ? (totalSize - copied) / speed : 0;
+                var mins = Math.floor(remaining / 60);
+                var secs = Math.floor(remaining % 60);
+                timeEl.textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+
+                setTimeout(updateProgress, 300);
+            }
+            updateProgress();
+        })();
+    </script>
+</body>
+</html>

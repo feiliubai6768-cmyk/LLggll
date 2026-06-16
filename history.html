@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史记录 - LVGL GUI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <div class="bg-shape shape1"></div>
+        <div class="bg-shape shape2"></div>
+        <div class="bg-shape shape3"></div>
+
+        <aside class="sidebar glass-panel">
+            <div class="nav-menu">
+                <button class="nav-item" onclick="location.href='monitoring.html'">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    实时监控
+                </button>
+                <button class="nav-item" onclick="location.href='settings.html'">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    参数设置
+                </button>
+                <button class="nav-item active" onclick="location.href='history.html'">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    历史记录
+                </button>
+                <button class="nav-item" onclick="location.href='transfer.html'">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    数据传输
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="dose-rate">
+                    <div class="label">剂量率</div>
+                    <div class="value">0.08 <span class="unit">μSv/h</span></div>
+                </div>
+                <div class="datetime">
+                    <div class="time" id="current-time">11:26:14</div>
+                    <div class="date" id="current-date">2024/06/20</div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <section id="history" class="screen active">
+                <div class="glass-card full-height">
+                    <div class="history-header">
+                        <h2>告警历史记录</h2>
+                        <div class="total-badge"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg> 共计: 12</div>
+                    </div>
+                    <table class="glass-table">
+                        <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>时间</th>
+                                <th>信息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>2024/06/20 10:15</td><td>剂量率超标报警</td></tr>
+                            <tr><td>2</td><td>2024/06/19 14:32</td><td>设备电量低</td></tr>
+                            <tr><td>3</td><td>2024/06/18 09:05</td><td>传感器连接中断</td></tr>
+                            <tr><td>4</td><td>2024/06/15 16:40</td><td>剂量率超标报警</td></tr>
+                            <tr><td>5</td><td>2024/06/12 11:20</td><td>剂量率超标报警</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="table-pagination">
+                        <button class="glass-btn icon-text"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg> 全部清除</button>
+                        <div class="page-controls">
+                            <button class="glass-btn">← 上一页</button>
+                            <button class="glass-btn">下一页 →</button>
+                        </div>
+                        <button class="glass-btn icon-text">返回 <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg></button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        (function() {
+            var timeEl = document.getElementById('current-time');
+            var dateEl = document.getElementById('current-date');
+            function updateClock() {
+                var now = new Date();
+                timeEl.textContent = [String(now.getHours()).padStart(2,'0'), String(now.getMinutes()).padStart(2,'0'), String(now.getSeconds()).padStart(2,'0')].join(':');
+                dateEl.textContent = now.getFullYear() + '/' + String(now.getMonth()+1).padStart(2,'0') + '/' + String(now.getDate()).padStart(2,'0');
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+        })();
+    </script>
+</body>
+</html>
